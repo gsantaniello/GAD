@@ -43,7 +43,13 @@ class WrapperLastFm {
 	public function scrapingInfoSong() {
 		$this->url = self::URI . self::KEY . "&artist=" . $this->artist . "&track=" . $this->song;
 		//echo $this->url;
-		@$getLastFm = file_get_contents ( $this->url );
+		$arrContextOptions=array(
+				"ssl"=>array(
+						"verify_peer"=>false,
+						"verify_peer_name"=>false,
+				),
+		);
+		@$getLastFm = file_get_contents ($this->url,false, stream_context_create($arrContextOptions));
 		if ($getLastFm != false) {
 			$dom = new DOMDocument();
 			@$dom->loadXML($getLastFm);

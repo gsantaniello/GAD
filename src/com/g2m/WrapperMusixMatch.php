@@ -41,8 +41,14 @@ class WrapperMusixMatch {
 	}
 	public function scrapingText() {
 		$this->url = self::URI . $this->artist . "/" . $this->song;
-		// echo $this->url;
-		@$getMusix = file_get_contents ( $this->url );
+		//echo $this->url;
+		$arrContextOptions=array(
+				"ssl"=>array(
+						"verify_peer"=>false,
+						"verify_peer_name"=>false,
+				),
+		);
+		@$getMusix = file_get_contents ($this->url,false, stream_context_create($arrContextOptions));
 		if ($getMusix != false) {
 			$dom = new DOMDocument ();
 			@$dom->loadHTML ( $getMusix );
