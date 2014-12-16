@@ -67,7 +67,8 @@ class WrapperLastFm {
 			//print_r($result2);
 			$albumName = $result2->item ( 0 )->nodeValue;
 			$cover = $result3->item ( 0 )->nodeValue; // img album
-			$d = $result4->item ( 0 )->nodeValue / 60; // prendere la prima cifra, inserire il punto e eliminare lo zero
+			echo "qui".$result4->item ( 0 )->nodeValue;
+			$d = ($result4->item ( 0 )->nodeValue /60000); // prendere la prima cifra, inserire il punto e eliminare lo zero
 
 			$duration = $this->formatDurata($d);
 			
@@ -130,9 +131,16 @@ class WrapperLastFm {
 	}
 	
 	private function formatDurata($string){
+		echo $string;
 		$start=substr($string, 0,1);
-		$end = substr($string, 1,(strlen($string)-2));
-		return $start.".".$end." min";
+		//echo "Inizio:     ".$start;
+		$end = substr($string, 1,3);
+		//echo "Fine:   ".$end;
+		if($end >=60){
+			$start += 1;
+			$end = $end % 60;
+		}
+		return $start.$end." min";
 	}
 	
 	public function getArtist() {
