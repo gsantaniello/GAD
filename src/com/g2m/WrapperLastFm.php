@@ -131,7 +131,6 @@ class WrapperLastFm {
 	}
 	
 	private function formatDurata($string){
-		//echo $string;
 		$start=substr($string, 0,1);
 		//echo "Inizio:     ".$start;
 		$end = substr($string, 1,3);
