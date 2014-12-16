@@ -1,17 +1,19 @@
 <?php
 class WrapperLastFm {
-	const URI = 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=';
+	const URI = 'http://ws.audioscrobbler.com/2.0/?method=';
 	const KEY = '6a53efea876de1447612a9f7f65ce432';
 	// $uriLastfm = 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=6a53efea876de1447612a9f7f65ce432&artist='.$authorLast.'&track='.$titleLast;
 	private $artist;
 	private $song;
 	private $url;
+	
 	public function __construct($artist, $song) {
 		$this->artist = $artist;
 		$this->song = $song;
 		
 		$this->verifyInput ();
 	}
+	
 	private function verifyInput() {
 		$arrayArtist = explode ( ' ', $this->artist );
 		$arrayTitle = explode ( ' ', $this->song );
@@ -40,8 +42,8 @@ class WrapperLastFm {
 		$result .= $array [$size - 1];
 		return $result;
 	}
-	public function scrapingInfoSong() {
-		$this->url = self::URI . self::KEY . "&artist=" . $this->artist . "&track=" . $this->song;
+	public function getInfoSong() {
+		$this->url = self::URI ."track.getInfo&api_key=". self::KEY . "&artist=" . $this->artist . "&track=" . $this->song;
 		//echo $this->url;
 		$arrContextOptions=array(
 				"ssl"=>array(
@@ -82,6 +84,49 @@ class WrapperLastFm {
 	  </div>";
 		
 		return $resultScraping;
+	}
+	
+	public function getListSongs(){
+		//http://ws.audioscrobbler.com/2.0/?method=track.search&track=Believe&api_key=6a53efea876de1447612a9f7f65ce432
+		$this->url = self::URI ."track.search&track=".$this->song."&api_key=". self::KEY;
+		
+		$arrContextOptions=array(
+				"ssl"=>array(
+						"verify_peer"=>false,
+						"verify_peer_name"=>false,
+				),
+		);
+		
+		@$getLastFm = file_get_contents ($this->url,false, stream_context_create($arrContextOptions));
+		if ($getLastFm != false) {
+			$dom = new DOMDocument();
+			@$dom->loadXML($getLastFm);
+			$xpath = new DOMXPath ( $dom );
+				
+			$query = "//trackmatches/track";
+			
+				
+			$result = $xpath->query ( $query ); // titolo album
+			
+			echo"<pre>";
+			//print_r($result->item(0)->childNodes->item(1)->nodeValue); //nome canzone
+			//print_r($result->item(0)->childNodes->item(3)->nodeValue); //nome artista
+			$listSong = "<ul>";
+			$len = $result->length;
+			for($i = 0; $i < $len; $i ++) {
+				$this->song = $result->item($i)->childNodes->item(1)->nodeValue;
+				$this->artist = $result->item($i)->childNodes->item(3)->nodeValue;
+				
+				$listSong .= "<li><a href='risultato.php?artist=".$this->artist."&song=".$this->song."'>".$this->song ." - ".$this->artist. "</a></li>";
+			}
+			$listSong .= "</ul>";
+			return $listSong;
+		}
+		else{
+			$listSong = "Nessuna canzone trovata";
+		}
+		
+		return $listSong;
 	}
 	
 	private function formatDurata($string){

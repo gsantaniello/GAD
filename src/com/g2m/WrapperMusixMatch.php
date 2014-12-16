@@ -55,7 +55,8 @@ class WrapperMusixMatch {
 			$query = "//div[@id='lyrics']";
 			$xpath = new DOMXPath ( $dom );
 			$result = $xpath->query ( $query );
-			// print_r($result);
+			//echo "<pre>";
+			//print_r($result);
 			$textSong = $result->item ( 0 )->nodeValue;
 		} 
 
