@@ -1,7 +1,7 @@
 testo canzone in base a artista e titolo 	--> musixmatch (fatto)
-lista canzoni più popolari in base a artista 	--> musixmatch (fatto)
+lista canzoni piu' popolari in base a artista 	--> musixmatch (fatto)
 lista canzoni in base al titolo 		--> musixmatch simile alla lista delle canzoni dell'artista oppure http://www.lastfm.it/api/show/track.search
-lista album più popolari in base a artista 	--> http://www.lastfm.it/api/show/artist.getTopAlbums oppure https://www.musixmatch.com/it/testi/artista/albums
+lista album piu' popolari in base a artista 	--> http://www.lastfm.it/api/show/artist.getTopAlbums oppure https://www.musixmatch.com/it/testi/artista/albums
 lista canzoni di un album 			--> http://www.lastfm.it/api/show/album.getInfo
 link acquisto canzone				--> http://www.lastfm.it/api/show/track.getBuylinks
 youtube api
