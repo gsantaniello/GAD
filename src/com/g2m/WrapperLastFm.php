@@ -67,7 +67,7 @@ class WrapperLastFm {
 			//print_r($result2);
 			$albumName = $result2->item ( 0 )->nodeValue;
 			$cover = $result3->item ( 0 )->nodeValue; // img album
-			echo "qui".$result4->item ( 0 )->nodeValue;
+			
 			$d = ($result4->item ( 0 )->nodeValue /60000); // prendere la prima cifra, inserire il punto e eliminare lo zero
 
 			$duration = $this->formatDurata($d);
@@ -131,7 +131,7 @@ class WrapperLastFm {
 	}
 	
 	private function formatDurata($string){
-		echo $string;
+		//echo $string;
 		$start=substr($string, 0,1);
 		//echo "Inizio:     ".$start;
 		$end = substr($string, 1,3);
