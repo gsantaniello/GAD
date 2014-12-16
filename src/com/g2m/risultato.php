@@ -79,7 +79,7 @@ $(document).ready(function(){
 			$request = $artist." ".$song;
 			$wrapperYouTube = new WrapperYouTube($request);
 			$idVideo = $wrapperYouTube->getIdByName();
-			echo "<p id='idVideo' hidden>".$idVideo."</p>"
+			echo "<p id='idVideo' hidden>".$idVideo."</p>";
 		}
 		
 		
