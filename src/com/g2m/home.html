@@ -1,23 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
-<title>Music G2M</title>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	
+<script>
+$(document).ready(function(){
+	
+$('#invia').click(function(){
+	var art = $('#artist').val();
+	var song = $('#song').val();
+	var request = 'artist='+art+'&song='+song;;
+	if(song && art){ //se artista e canzone sono settati
+		location.href = "risultato.php?"+request;
+	}
+	else{
+		$.ajax({
+		    url : "risultatoAjax.php" ,
+		    data : request, 
+		    type : "GET",
+		    success : function (data,stato) {
+		        $("#list").html(data);
+		    },
+		    error : function (richiesta,stato,errori) {
+		        alert("E' evvenuto un errore. Il stato della chiamata: "+stato);
+		    }
+		});
+	}
+
+});
+	
+$('#annulla').click(function(){
+	$(":text").val(null);
+});
+
+});
+
+</script>
 </head>
 <body>
-	<form method="GET" action="risultato.php">
-		<table>
-			<tr>
-				<td>Artista: <input type="text" name="artist"></td>
-			</tr>
-			<tr>
-				<td>Canzone: <input type="text" name="song"></td>
-			</tr>
-			<tr>
-				<td><input type="submit" value="Invia"><input
-					type="reset" value="Annulla"></td>
-			</tr>
-		</table>
-	</form>
+	<table>
+		<tr>
+			<td>Artist: <input id="artist" type="text" name="artist"></td>
+		</tr>
+		<tr>
+			<td>Song: <input id="song" type="text" name="song"></td>
+		</tr>
+		<tr>
+			<td><button id="invia">Invia</button></td>
+			<td><button id="annulla">Annulla</button></td>
+		</tr>
+	</table>
+	
+	<div id="list"> </div>
 </body>
 </html>

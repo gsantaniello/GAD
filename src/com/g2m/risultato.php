@@ -1,11 +1,12 @@
 <html>
 <head>
-<meta charset="utf-8"/>
-		<title>Music G2M</title>
+<meta charset="utf-8" />
+<title>Music G2M</title>
 
-		
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<script>
+
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
 
 $(document).ready(function(){
 	playVideo();
@@ -64,22 +65,36 @@ $(document).ready(function(){
 		$wrapperMusixMatch = new WrapperMusixMatch($artist, $song);
 		$wrapperLastFm = new WrapperLastFm($artist, $song);
 
-		if($artist == null && $song != null){
-			$listSongs = $wrapperLastFm->getListSongs();
+// 		if($artist == null && $song != null){
+// 			//$listSongs = $wrapperLastFm->getListSongs();
+// 			$listSongs = $wrapperMusixMatch->scrapingListSongs();
+			
+// 			echo $listSongs;
+// 		}
 		
-			echo $listSongs;
-		}
+// 		if($artist != null && $song == null){
+// 			//$listSongs = $wrapperLastFm->getListSongs();
+// 			$list = $wrapperMusixMatch->scrapingArtistSongs();
+				
+// 			echo $list;
+// 		}
 				
 		if($artist != null && $song != null){
 			$textSong = $wrapperMusixMatch->scrapingText();
-			echo "<div id='testo'> <pre>".$textSong."</pre></div>";
-			$infoSong = $wrapperLastFm->getInfoSong();
-			echo $infoSong;
-			
-			$request = $artist." ".$song;
-			$wrapperYouTube = new WrapperYouTube($request);
-			$idVideo = $wrapperYouTube->getIdByName();
-			echo "<p id='idVideo' hidden>".$idVideo."</p>";
+			if($textSong=="0"){
+				echo "<h1>Testo non trovato</h1>";
+				echo "<h3>Controllare i dati in input ^_^</h3>";
+			}
+			else{
+				echo "<div id='testo'> <pre>" . $textSong . "</pre></div>";
+				$infoSong = $wrapperLastFm->getInfoSong ();
+				echo $infoSong;
+				
+				$request = $artist . " " . $song;
+				$wrapperYouTube = new WrapperYouTube ( $request );
+				$idVideo = $wrapperYouTube->getIdByName ();
+				echo "<p id='idVideo' hidden>" . $idVideo . "</p>";
+			}
 		}
 		
 		
