@@ -5,7 +5,7 @@ include ("WrapperMusixMatch.php");
 $artist = $_GET ['artist'];
 $song = $_GET ['song'];
 
-$wrapperMusixMatch = new WrapperMusixMatch ( $artist, $song );
+$wrapperMusixMatch = new WrapperMusixMatch ( $artist, $song, " ");
 
 // canzone inserita
 if ($artist == null && $song != null) {

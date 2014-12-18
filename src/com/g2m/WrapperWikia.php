@@ -7,31 +7,33 @@ class WrapperWikia {
 	
 	
 	public function __construct($artist) {
-		$this->artist = $artist;
-		$this->verifyInput ();
+		$this->artist = rawurlencode($artist);
+		//$this->verifyInput ();
 	}
-	private function verifyInput() {
-		$arrayArtist = explode ( ' ', $this->artist );
+	
+// 	private function verifyInput() {
+// 		$arrayArtist = explode ( ' ', $this->artist);
 		
-		$sizeArtist = sizeof ( $arrayArtist );
+// 		$sizeArtist = sizeof ( $arrayArtist );
 		
-		if ($sizeArtist > 1) {
-			$this->artist = $this->format ( $arrayArtist );
-		} else {
-			$this->artist = $arrayArtist [0];
-		}
+// 		if ($sizeArtist > 1) {
+// 			$this->artist = $this->format ( $arrayArtist );
+// 		} else {
+// 			$this->artist = $arrayArtist [0];
+// 		}
 		
-	}
-	private function format($array) {
-		$size = sizeof ( $array );
-		$result = "";
-		for($i = 0; $i < $size - 1; $i ++) {
-			$result .= $array [$i] . "%20";
-		}
-		$result .= $array [$size - 1];
-		return $result;
-	}
-	public function scrapingAlbum() {
+// 	}
+// 	private function format($array) {
+// 		$size = sizeof ( $array );
+// 		$result = "";
+// 		for($i = 0; $i < $size - 1; $i ++) {
+// 			$result .= $array [$i] . "%20";
+// 		}
+// 		$result .= $array [$size - 1];
+// 		return $result;
+// 	}
+
+ 	public function scrapingAlbum() {
 		$this->url = self::URI . $this->artist . self::FORMATO;
 		echo $this->url;
 		$arrContextOptions=array(
@@ -60,7 +62,9 @@ class WrapperWikia {
 				for($j=0;$j<$lenAlbum;$j++)
 				{
 					$songItem=$result2->item($i)->childNodes->item($j)->nodeValue;
-					$list.="<li>".$songItem."</li>";
+					$href = "risultato.php?artist=".$this->artist."&song=".$songItem;
+					$list .= "<li><a href=\" " . $href . "\" >" . $songItem."</a></li>";
+					//$list.="<li>".$songItem."</li>";
 				}
 				$list.="</ol>";
 			}

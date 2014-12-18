@@ -59,11 +59,25 @@ $(document).ready(function(){
 		include("WrapperMusixMatch.php");
 		include("WrapperYouTube.php");
 		include("WrapperLastFm.php");
-		$artist=$_GET['artist'];
-		$song=$_GET['song'];
 		
-		$wrapperMusixMatch = new WrapperMusixMatch($artist, $song);
-		$wrapperLastFm = new WrapperLastFm($artist, $song);
+		$url = " ";
+		if(isset($_GET['artist']) && isset($_GET['song'])){
+			$artist=$_GET['artist'];
+			$song=$_GET['song'];
+		}else {
+			
+			if(isset($_GET['url'])){
+				$url = $_GET['url'];
+				print_r("stampo la url".$url);
+				$array = split ( "[/]", $url );
+				// da sistemare
+				
+				$artist=$array[sizeof($array)-2]; 
+				$song=$array[sizeof($array)-1];
+				echo "artista ".$artist." canzone".$song;
+			}
+		}
+		
 
 // 		if($artist == null && $song != null){
 // 			//$listSongs = $wrapperLastFm->getListSongs();
@@ -79,14 +93,16 @@ $(document).ready(function(){
 // 			echo $list;
 // 		}
 				
-		if($artist != null && $song != null){
+		//if($artist != null && $song != null){
+			$wrapperMusixMatch = new WrapperMusixMatch($artist, $song,$url);
+			
 			$textSong = $wrapperMusixMatch->scrapingText();
 			if($textSong=="0"){
 				echo "<h1>Testo non trovato</h1>";
-				echo "<h3>Controllare i dati in input ^_^</h3>";
 			}
 			else{
 				echo "<div id='testo'> <pre>" . $textSong . "</pre></div>";
+				$wrapperLastFm = new WrapperLastFm($artist, $song);
 				$infoSong = $wrapperLastFm->getInfoSong ();
 				echo $infoSong;
 				
@@ -95,7 +111,7 @@ $(document).ready(function(){
 				$idVideo = $wrapperYouTube->getIdByName ();
 				echo "<p id='idVideo' hidden>" . $idVideo . "</p>";
 			}
-		}
+		//}
 		
 		
 		

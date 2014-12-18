@@ -11,40 +11,57 @@ class WrapperLastFm {
 		$this->artist = $artist;
 		$this->song = $song;
 		
+		//rawurlencode($artist);
 		$this->verifyInput ();
 	}
 	
 	private function verifyInput() {
-		$arrayArtist = split("['|' '|_]", $this->artist );
-		$arrayTitle =  split("['|' '|_]", $this->song);
+		$arrayArtist = split("[-]", $this->artist);
+		$arrayTitle =  split("[-]", $this->song);
+		print_r($arrayTitle);
 		
-		$sizeArtist = sizeof ( $arrayArtist );
-		$sizeTitle = sizeof ( $arrayTitle );
+		$artist = implode(" ",$arrayArtist);
+		$song = implode(" ",$arrayTitle);
 		
-		if ($sizeArtist > 1) {
-			$this->artist = $this->format ( $arrayArtist );
-		} else {
-			$this->artist = $arrayArtist [0];
-		}
+		$this->artist = rawurlencode($artist);
+		$this->song = rawurlencode($song);
 		
-		if ($sizeTitle > 1) {
-			$this->song = $this->format ( $arrayTitle );
-		} else {
-			$this->song = $arrayTitle [0];
-		}
+// 				$sizeArtist = sizeof ( $arrayArtist );
+// 				$sizeTitle = sizeof ( $arrayTitle );
+		
+// 				if ($sizeArtist > 1) {
+// 					$this->artist = $this->format ( $arrayArtist );
+// 				} else {
+// 					$this->artist = $arrayArtist [0];
+// 				}
+		
+// 				if ($sizeTitle > 1) {
+// 					$this->song = $this->format ( $arrayTitle );
+// 				} else {
+// 					$this->song = $arrayTitle [0];
+// 				}
+				
 	}
-	private function format($array) {
-		$size = sizeof ( $array );
-		$result = "";
-		for($i = 0; $i < $size - 1; $i ++) {
-			$result .= $array [$i] . "%20";
-		}
-		$result .= $array [$size - 1];
-		return $result;
-	}
+
+		
+	
+// 	private function format($array) {
+// 		$size = sizeof ( $array );
+// 		$result = "";
+// 		for($i = 0; $i < $size - 1; $i ++) {
+// 			$result .= $array [$i] . "%20";
+// 		}
+// 		$result .= $array [$size - 1];
+// 		return $result;
+// 	}
+
+	
 	public function getInfoSong() {
 		$this->url = self::URI ."track.getInfo&api_key=". self::KEY . "&artist=" . $this->artist . "&track=" . $this->song;
-		//echo $this->url;
+		echo $this->url;
+		$albumName=null;
+		$cover=null;
+		$duration=null;
 		$arrContextOptions=array(
 				"ssl"=>array(
 						"verify_peer"=>false,
@@ -65,39 +82,31 @@ class WrapperLastFm {
 			$result3 = $xpath->query ( $query3 ); // img album
 			$result4 = $xpath->query ( $query4 );
 			//print_r($result2);
-			$albumName = $result2->item ( 0 )->nodeValue;
+			$albumName = $result2->item ( 0 )->nodeValue; //inserire @ per eliminare warning
 			$cover = $result3->item ( 0 )->nodeValue; // img album
 			
-			$d = ($result4->item ( 0 )->nodeValue /60000); // prendere la prima cifra, inserire il punto e eliminare lo zero
-
-			$duration = $this->formatDurata($d);
+			$d = ($result4->item ( 0 )->nodeValue)/1000; // prendere la prima cifra, inserire il punto e eliminare lo zero
+			$duration  = gmdate("i:s",$d);
+			//$duration = $this->formatDurata($d);
 			
 		} 
-
-		$resultScraping = "<div id='info'> 
-		<table border='1'>
+		$resultScraping = "<div id='info'>";
+		
+		if(!($albumName==null && $cover==null && $duration==null)){
+			$resultScraping.="<table border='1'>
 			<th colspan='2' style='text-align:center;'>Info</th>
 			<tr><td>Album</td><td>" . $albumName . "</td></tr>
-			<tr><td>Copertina</td><td><img id='cover' src=$cover></td></tr>
-			<tr><td>Durata</td><td>" . $duration . "</td></tr>	
+			<tr><td>Copertina</td><td><img id='cover' src=". $cover."></td></tr>
+			<tr><td>Durata</td><td>" . $duration . " min</td></tr>	
 			
-		</table>
-	  </div>";
+				</table>";	
+		}
+		$resultScraping.="</div>";
+		
 		
 		return $resultScraping;
 	}
 	
-	private function formatDurata($string){
-		$start=substr($string, 0,1);
-		//echo "Inizio:     ".$start;
-		$end = substr($string, 1,3);
-		//echo "Fine:   ".$end;
-		if($end >=60){
-			$start += 1;
-			$end = $end % 60;
-		}
-		return $start.$end." min";
-	}
 	
 	public function getArtist() {
 		return $this->artist;

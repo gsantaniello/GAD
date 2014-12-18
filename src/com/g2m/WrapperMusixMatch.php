@@ -4,19 +4,21 @@ class WrapperMusixMatch {
 	private $artist;
 	private $song;
 	private $url;
-	public function __construct($artist, $song) {
+	public function __construct($artist, $song, $url) {
 		$this->artist = $artist;
 		$this->song = $song;
-		
+		$this->url = $url;
+		//echo "Echo musixmatch costruttore: ".$this->artist." and ". $this->song;
 		$this->verifyInput ();
 	}
 	private function verifyInput() {
-		$arrayArtist = split("['|' '|_]", $this->artist );
-		echo"<pre>";
-		print_r($arrayArtist);
-		$arrayTitle =  split("['|' '|_]", $this->song);
-		echo"<pre>";
-		print_r($arrayTitle);
+		$arrayArtist = split ( "[ ]", $this->artist );
+		echo "<pre>";
+		print_r ( $arrayArtist );
+		//echo "Echo musixmatch costruttore: ". $this->song;
+		$arrayTitle = split ( "[ ]", $this->song );
+		echo "<pre>";
+		print_r ( $arrayTitle );
 		
 		$sizeArtist = sizeof ( $arrayArtist );
 		$sizeTitle = sizeof ( $arrayTitle );
@@ -45,7 +47,12 @@ class WrapperMusixMatch {
 		return $result;
 	}
 	public function scrapingText() {
-		$this->url = self::URI . "lyrics/" . $this->artist . "/" . $this->song;
+		if (isset ( $_GET ['url'] )) {
+			$this->url = self::URI . $_GET ['url'];
+		} else {
+			$this->url = self::URI . "lyrics/" . $this->artist . "/" . $this->song;
+		}
+		
 		// echo $this->url;
 		$arrContextOptions = array (
 				"ssl" => array (
@@ -73,6 +80,7 @@ class WrapperMusixMatch {
 	}
 	public function scrapingListSongs() {
 		$this->url = self::URI . "search/" . $this->song;
+		
 		$arrContextOptions = array (
 				"ssl" => array (
 						"verify_peer" => false,
@@ -86,23 +94,32 @@ class WrapperMusixMatch {
 			$xpath = new DOMXPath ( $dom );
 			
 			$query = "//ul[@class='tracks list']//h2/a";
-			$query2 = "//ul[@class='tracks list']//h3//a";
+			$query2 = "//ul[@class='tracks list']//h3";
 			
 			$result = $xpath->query ( $query );
 			$result2 = $xpath->query ( $query2 );
 			
-			//print_r ( $result2);
+			// print_r ( $result2);
 			echo "<pre>";
-			//print_r($result->item(1)->attributes->item(0)->value);
+			// print_r($result->item(1)->attributes->item(0)->value);
+			// print_r ($result2->item(2));
 			$list = "<ul>";
 			$len = $result->length;
-			for($i = 0; $i < $len; $i ++) {
+			$this->song = $result->item ( 0 )->nodeValue;
+			$this->artist = $result2->item ( 0 )->nodeValue;
+			$valueUrl = $result->item ( 0 )->attributes->item ( 0 )->value;
+			$href = "risultato.php?&url=" . $valueUrl;
+			$list .= "<li><a href=\" " . $href . "\" >" . $this->song . " - " . $this->artist . "</a></li>";
+			for($i = 1; $i < $len; $i ++) {
 				
-				$this->song = $result->item ( $i )->nodeValue;
-				$this->artist = $result2->item($i)->nodeValue;
-				$href = "risultato.php?artist=".$this->artist."&song=".$this->song;
-				$list .= "<li><a href=' ".$href." '>".$this->song ." - ".$this->artist. "</a></li>";
-			}	
+				if ($result2->item ( $i )->nodeValue != $result2->item ( $i - 1 )->nodeValue) {
+					$this->song = $result->item ( $i )->nodeValue;
+					$this->artist = $result2->item ( $i )->nodeValue;
+					$valueUrl = $result->item ( $i )->attributes->item ( 0 )->value;
+					$href = "risultato.php?url=" . $valueUrl;
+					$list .= "<li><a href=\" " . $href . "\" >" . $this->song . " - " . $this->artist . "</a></li>";
+				}
+			}
 			$list .= "</ul>";
 			return $list;
 		}
@@ -112,40 +129,41 @@ class WrapperMusixMatch {
 		$arrContextOptions = array (
 				"ssl" => array (
 						"verify_peer" => false,
-						"verify_peer_name" => false
-				)
+						"verify_peer_name" => false 
+				) 
 		);
 		@$getMusix = file_get_contents ( $this->url, false, stream_context_create ( $arrContextOptions ) );
 		if ($getMusix != false) {
 			$dom = new DOMDocument ();
 			@$dom->loadHTML ( $getMusix );
 			$xpath = new DOMXPath ( $dom );
-				
+			
 			$query = "//ul[@class='tracks list']//h2/a";
-			$query2 = "//ul[@class='tracks list']//h3//a";
-				
+			$query2 = "//ul[@class='tracks list']//h3";
+			
 			$result = $xpath->query ( $query );
 			$result2 = $xpath->query ( $query2 );
-				
-			//print_r ( $result2);
+			
+			// print_r ( $result2);
 			echo "<pre>";
-			//print_r($result->item(1)->attributes->item(0)->value);
+			// print_r($result->item(1)->attributes->item(0)->value);
 			$list = "<ul>";
 			$len = $result->length;
+			
 			for($i = 0; $i < $len; $i ++) {
-	
+				
 				$this->song = $result->item ( $i )->nodeValue;
-				$this->artist = $result2->item($i)->nodeValue;
-				//format($this->song); //controllare canzone con titolo che contiene apostrofo
+				$this->artist = $result2->item ( $i )->nodeValue;
+				$valueUrl = $result->item ( $i )->attributes->item ( 0 )->value;
+				//$href = "risultato.php?url=" . $valueUrl;
 				$href = "risultato.php?artist=".$this->artist."&song=".$this->song;
-				$list .= "<li><a href=' ".$href." '>".$this->song ." - ".$this->artist. "</a></li>";
+				//$list .= "<li><a href=\" " . $href . "\" >" . $songItem."</a></li>";
+				$list .= "<li><a href=\" " . $href . "\" >" . $this->song . " - " . $this->artist . "</a></li>";
 			}
 			$list .= "</ul>";
 			return $list;
 		}
 	}
-	
-	
 	public function getArtist() {
 		return $this->artist;
 	}
