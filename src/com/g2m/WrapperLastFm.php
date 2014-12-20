@@ -2,7 +2,6 @@
 class WrapperLastFm {
 	const URI = 'http://ws.audioscrobbler.com/2.0/?method=';
 	const KEY = '6a53efea876de1447612a9f7f65ce432';
-	// $uriLastfm = 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=6a53efea876de1447612a9f7f65ce432&artist='.$authorLast.'&track='.$titleLast;
 	private $artist;
 	private $song;
 	private $url;
@@ -10,8 +9,6 @@ class WrapperLastFm {
 	public function __construct($artist, $song) {
 		$this->artist = $artist;
 		$this->song = $song;
-		
-		//rawurlencode($artist);
 		$this->verifyInput ();
 	}
 	
@@ -25,36 +22,42 @@ class WrapperLastFm {
 		
 		$this->artist = rawurlencode($artist);
 		$this->song = rawurlencode($song);
-		
-// 				$sizeArtist = sizeof ( $arrayArtist );
-// 				$sizeTitle = sizeof ( $arrayTitle );
-		
-// 				if ($sizeArtist > 1) {
-// 					$this->artist = $this->format ( $arrayArtist );
-// 				} else {
-// 					$this->artist = $arrayArtist [0];
-// 				}
-		
-// 				if ($sizeTitle > 1) {
-// 					$this->song = $this->format ( $arrayTitle );
-// 				} else {
-// 					$this->song = $arrayTitle [0];
-// 				}
-				
+						
 	}
-
 		
-	
-// 	private function format($array) {
-// 		$size = sizeof ( $array );
-// 		$result = "";
-// 		for($i = 0; $i < $size - 1; $i ++) {
-// 			$result .= $array [$i] . "%20";
-// 		}
-// 		$result .= $array [$size - 1];
-// 		return $result;
-// 	}
-
+	public function getInfoAlbum($album){
+		echo "arrivo alla funzione get info album";
+		$this->url = self::URI ."album.getinfo&api_key=". self::KEY . "&artist=" . $this->artist . "&album=" . $album;
+		echo $this->url;
+		$albumName=null;
+		$cover=null;
+		$duration=null;
+		$arrContextOptions=array(
+				"ssl"=>array(
+						"verify_peer"=>false,
+						"verify_peer_name"=>false,
+				),
+		);
+		@$getLastFm = file_get_contents ($this->url,false, stream_context_create($arrContextOptions));
+		if ($getLastFm != false) {
+			$dom = new DOMDocument();
+			@$dom->loadXML($getLastFm);
+			$xpath = new DOMXPath ( $dom );
+			$query = "//album/tracks/track/name";
+				
+			$result = $xpath->query ( $query ); // titoli tracks
+			print_r($result);
+			$n=$result->length;
+			$resultScraping = "<div id='infoAlbum'><ul>";
+			
+			for($i=0;$i<$n;$i++){
+				$href = "risultato.php?artist=".$this->artist."&song=".$result->item ($i)->nodeValue;
+				$resultScraping.="<li><a href=\" " . $href . "\" >" .$result->item($i)->nodeValue."</a></li>";
+			}
+			$resultScraping.="</ul></div>";
+			return $resultScraping;
+		}
+	}
 	
 	public function getInfoSong() {
 		$this->url = self::URI ."track.getInfo&api_key=". self::KEY . "&artist=" . $this->artist . "&track=" . $this->song;
@@ -96,7 +99,7 @@ class WrapperLastFm {
 			$resultScraping.="<table border='1'>
 			<th colspan='2' style='text-align:center;'>Info</th>
 			<tr><td>Album</td><td>" . $albumName . "</td></tr>
-			<tr><td>Copertina</td><td><img id='cover' src=". $cover."></td></tr>
+			<tr><td>Copertina</td><td><img id=\"cover\" onclick=\"dettaglioAlbum('$this->artist','$albumName')\" src=". $cover."></td></tr>
 			<tr><td>Durata</td><td>" . $duration . " min</td></tr>	
 			
 				</table>";	

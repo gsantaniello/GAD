@@ -7,10 +7,25 @@
 <script
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script>
-
 $(document).ready(function(){
 	playVideo();
 });
+
+	
+	function dettaglioAlbum(artist,album){
+		var request =  'artist='+artist+'&album='+album;
+		$.ajax({
+		    url : "risultatoAjax.php" ,
+		    data : request, 
+		    type : "GET",
+		    success : function (data,stato) {
+		        $("#detAlbum").html(data);
+		    },
+		    error : function (richiesta,stato,errori) {
+		        alert("E' avvenuto un errore. Lo stato della chiamata: "+stato);
+		    }
+		});
+	}
 
 	var tag;
 	var firstScriptTag;
@@ -32,27 +47,19 @@ $(document).ready(function(){
 				width : '640',
 				videoId : response,
 				events : {
-					'onReady' : onPlayerReady,
-					'onStateChange' : onPlayerStateChange
+					'onReady' : onPlayerReady
 				}
 			});
 		}
 		
-		// 4. The API will call this function when the video player is ready.
 		function onPlayerReady(event) {
 			event.target.playVideo();
 		}
-	
-		// 5. The API calls this function when the player's state changes.
-		//    The function indicates that when playing a video (state=1),
-		//    the player should play for six seconds and then stop.
-		var done = false;
-		function onPlayerStateChange(event) {
-	
-		}
+
 		function stopVideo() {
 			player.stopVideo();
 		}
+		
 	</script>
 </head>
 		<?php  
@@ -60,47 +67,18 @@ $(document).ready(function(){
 		include("WrapperYouTube.php");
 		include("WrapperLastFm.php");
 		
-		$url = " ";
 		if(isset($_GET['artist']) && isset($_GET['song'])){
 			$artist=$_GET['artist'];
 			$song=$_GET['song'];
-		}else {
-			
-			if(isset($_GET['url'])){
-				$url = $_GET['url'];
-				print_r("stampo la url".$url);
-				$array = split ( "[/]", $url );
-				// da sistemare
-				
-				$artist=$array[sizeof($array)-2]; 
-				$song=$array[sizeof($array)-1];
-				echo "artista ".$artist." canzone".$song;
-			}
 		}
-		
-
-// 		if($artist == null && $song != null){
-// 			//$listSongs = $wrapperLastFm->getListSongs();
-// 			$listSongs = $wrapperMusixMatch->scrapingListSongs();
-			
-// 			echo $listSongs;
-// 		}
-		
-// 		if($artist != null && $song == null){
-// 			//$listSongs = $wrapperLastFm->getListSongs();
-// 			$list = $wrapperMusixMatch->scrapingArtistSongs();
-				
-// 			echo $list;
-// 		}
-				
-		//if($artist != null && $song != null){
-			$wrapperMusixMatch = new WrapperMusixMatch($artist, $song,$url);
+		$wrapperMusixMatch = new WrapperMusixMatch($artist, $song,'');
 			
 			$textSong = $wrapperMusixMatch->scrapingText();
 			if($textSong=="0"){
 				echo "<h1>Testo non trovato</h1>";
 			}
 			else{
+				
 				echo "<div id='testo'> <pre>" . $textSong . "</pre></div>";
 				$wrapperLastFm = new WrapperLastFm($artist, $song);
 				$infoSong = $wrapperLastFm->getInfoSong ();
@@ -111,12 +89,9 @@ $(document).ready(function(){
 				$idVideo = $wrapperYouTube->getIdByName ();
 				echo "<p id='idVideo' hidden>" . $idVideo . "</p>";
 			}
-		//}
-		
-		
-		
 		?>
-
-	<div id="player"></div>
+		
+	<div  id="detAlbum"></div>
+<div id="player"></div>
 
 </html>
