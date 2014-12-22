@@ -27,7 +27,8 @@ class WrapperLastFm {
 		
 	public function getInfoAlbum($album){
 		echo "arrivo alla funzione get info album";
-		$this->url = self::URI ."album.getinfo&api_key=". self::KEY . "&artist=" . $this->artist . "&album=" . $album;
+		$a = rawurlencode($album);
+		$this->url = self::URI ."album.getinfo&api_key=". self::KEY . "&artist=" . $this->artist . "&album=" . $a;
 		echo $this->url;
 		$albumName=null;
 		$cover=null;
