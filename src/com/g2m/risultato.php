@@ -59,39 +59,62 @@ $(document).ready(function(){
 		function stopVideo() {
 			player.stopVideo();
 		}
-		
+
 	</script>
 </head>
-		<?php  
-		include("WrapperMusixMatch.php");
-		include("WrapperYouTube.php");
-		include("WrapperLastFm.php");
+		<?php
 		
-		if(isset($_GET['artist']) && isset($_GET['song'])){
-			$artist=$_GET['artist'];
-			$song=$_GET['song'];
+		session_start();
+		
+		include ("WrapperMusixMatch.php");
+		include ("WrapperYouTube.php");
+		include ("WrapperLastFm.php");
+		include ("WrapperGoogleImage.php");
+		
+
+		
+		if (isset ( $_GET ['artist'] ) && isset ( $_GET ['song'] )) {
+			$artist = $_GET ['artist'];
+			$song = $_GET ['song'];
 		}
-		$wrapperMusixMatch = new WrapperMusixMatch($artist, $song,'');
+		
+		if (isset($_SESSION[$artist])){
+			$image=$_SESSION[$artist];
+		}
+		else {
+			$wrapperGoogleImage = new WrapperGoogleImage ( $artist );
+			$json = $wrapperGoogleImage->get_url_contents ();
+				
+			$data = json_decode ( $json );
+				
+			$source=$data->responseData->results [0]->url;
+				
+			$image="<img  src=". $source." height=\"300\" width=\"300\"></img>";
+			$_SESSION[$artist]=$image;
+		}
+		
+		echo "<div id='immagine'> " . $image.  "</div>";
+		
+		$wrapperMusixMatch = new WrapperMusixMatch ( $artist, $song, '' );
+		$textSong = $wrapperMusixMatch->scrapingText ();
+		if ($textSong == "0") {
+			echo "<h1>Testo non trovato</h1>";
+		} else {
 			
-			$textSong = $wrapperMusixMatch->scrapingText();
-			if($textSong=="0"){
-				echo "<h1>Testo non trovato</h1>";
-			}
-			else{
-				
-				echo "<div id='testo'> <pre>" . $textSong . "</pre></div>";
-				$wrapperLastFm = new WrapperLastFm($artist, $song);
-				$infoSong = $wrapperLastFm->getInfoSong ();
-				echo $infoSong;
-				
-				$request = $artist . " " . $song;
-				$wrapperYouTube = new WrapperYouTube ( $request );
-				$idVideo = $wrapperYouTube->getIdByName ();
-				echo "<p id='idVideo' hidden>" . $idVideo . "</p>";
-			}
+			echo "<div id='testo'> <pre>" . $textSong . "</pre></div>";
+			
+			$wrapperLastFm = new WrapperLastFm ( $artist, $song );
+			$infoSong = $wrapperLastFm->getInfoSong ();
+			echo $infoSong;
+			
+			$request = $artist . " " . $song;
+			$wrapperYouTube = new WrapperYouTube ( $request );
+			$idVideo = $wrapperYouTube->getIdByName ();
+			echo "<p id='idVideo' hidden>" . $idVideo . "</p>";
+		}
 		?>
 		
-	<div  id="detAlbum"></div>
+	<div id="detAlbum"></div>
 <div id="player"></div>
 
 </html>
