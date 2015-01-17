@@ -66,6 +66,7 @@
 				<div id='popularSong' style='border:1px solid green'>" . $list . "</div>";
 		}
 		
+		
 		if ($artist != null && $album!=null && $song==null){
 			$wrapperLastFm = new WrapperLastFm($artist, " ");
 			$infoSong = $wrapperLastFm->getInfoAlbum($album);

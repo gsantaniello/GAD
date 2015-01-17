@@ -15,7 +15,7 @@ class WrapperLastFm {
 	private function verifyInput() {
 		$arrayArtist = split("[-]", $this->artist);
 		$arrayTitle =  split("[-]", $this->song);
-		print_r($arrayTitle);
+		//print_r($arrayTitle);
 		
 		$artist = implode(" ",$arrayArtist);
 		$song = implode(" ",$arrayTitle);
@@ -24,22 +24,33 @@ class WrapperLastFm {
 		$this->song = rawurlencode($song);
 						
 	}
+	
+	private function getContextOptions(){
+		$arrContextOptions = array (
+				"ssl" => array (
+						"verify_peer" => false,
+						"verify_peer_name" => false
+				),
+				'http'=>array(
+						'method'=>"GET",
+						'header'=>"Accept-language: en\r\n" .
+						"Cookie: foo=bar\r\n" .  // check function.stream-context-create on php.net
+						"User-Agent: Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en) AppleWebKit/124 (KHTML, like Gecko) Safari/125\r\n"
+				)
+		);
+		return $arrContextOptions;
+	}
 		
 	public function getInfoAlbum($album){
-		echo "arrivo alla funzione get info album";
 		$a = rawurlencode($album);
 		$this->url = self::URI ."album.getinfo&api_key=". self::KEY . "&artist=" . $this->artist . "&album=" . $a;
-		echo $this->url;
+		//echo $this->url;
 		$albumName=null;
 		$cover=null;
 		$duration=null;
-		$arrContextOptions=array(
-				"ssl"=>array(
-						"verify_peer"=>false,
-						"verify_peer_name"=>false,
-				),
-		);
-		@$getLastFm = file_get_contents ($this->url,false, stream_context_create($arrContextOptions));
+		
+		$context = $this->getContextOptions();
+		@$getLastFm = file_get_contents ( $this->url, false, stream_context_create ( $context ) );
 		if ($getLastFm != false) {
 			$dom = new DOMDocument();
 			@$dom->loadXML($getLastFm);
@@ -47,7 +58,7 @@ class WrapperLastFm {
 			$query = "//album/tracks/track/name";
 				
 			$result = $xpath->query ( $query ); // titoli tracks
-			print_r($result);
+			//print_r($result);
 			$n=$result->length;
 			$resultScraping = "<div id='infoAlbum'><ul>";
 			
@@ -62,17 +73,14 @@ class WrapperLastFm {
 	
 	public function getInfoSong() {
 		$this->url = self::URI ."track.getInfo&api_key=". self::KEY . "&artist=" . $this->artist . "&track=" . $this->song;
-		echo $this->url;
+		//echo $this->url;
 		$albumName=null;
 		$cover=null;
 		$duration=null;
-		$arrContextOptions=array(
-				"ssl"=>array(
-						"verify_peer"=>false,
-						"verify_peer_name"=>false,
-				),
-		);
-		@$getLastFm = file_get_contents ($this->url,false, stream_context_create($arrContextOptions));
+		
+		$context = $this->getContextOptions();
+		@$getLastFm = file_get_contents ( $this->url, false, stream_context_create ( $context ) );
+		
 		if ($getLastFm != false) {
 			$dom = new DOMDocument();
 			@$dom->loadXML($getLastFm);

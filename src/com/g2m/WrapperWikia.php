@@ -10,17 +10,28 @@ class WrapperWikia {
 		$this->artist = rawurlencode($artist);
 	}
 	
+	private function getContextOptions(){
+		$arrContextOptions = array (
+				"ssl" => array (
+						"verify_peer" => false,
+						"verify_peer_name" => false
+				),
+				'http'=>array(
+						'method'=>"GET",
+						'header'=>"Accept-language: en\r\n" .
+						"Cookie: foo=bar\r\n" .  // check function.stream-context-create on php.net
+						"User-Agent: Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en) AppleWebKit/124 (KHTML, like Gecko) Safari/125\r\n"
+				)
+		);
+		return $arrContextOptions;
+	}
+	
  	public function scrapingAlbum() {
 		$this->url = self::URI . $this->artist . self::FORMATO;
-		echo $this->url;
-		$arrContextOptions=array(
-				"ssl"=>array(
-						"verify_peer"=>false,
-						"verify_peer_name"=>false,
-				),
-		);
-		
-		@$getAlbum= file_get_contents($this->url,false,stream_context_create($arrContextOptions));
+		//echo $this->url;
+				
+		$context = $this->getContextOptions();
+		@$getAlbum = file_get_contents ( $this->url, false, stream_context_create ( $context ) );
 		
 		if ($getAlbum != false) {
 			$dom = new DOMDocument ();

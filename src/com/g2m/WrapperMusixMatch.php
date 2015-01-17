@@ -13,12 +13,12 @@ class WrapperMusixMatch {
 	}
 	private function verifyInput() {
 		$arrayArtist = split ( "[ ]", $this->artist );
-		echo "<pre>";
-		print_r ( $arrayArtist );
-		//echo "Echo musixmatch costruttore: ". $this->song;
+// 		echo "<pre>";
+// 		print_r ( $arrayArtist );
+// 		echo "Echo musixmatch costruttore: ". $this->song;
 		$arrayTitle = split ( "[ ]", $this->song );
-		echo "<pre>";
-		print_r ( $arrayTitle );
+// 		echo "<pre>";
+// 		print_r ( $arrayTitle );
 		
 		$sizeArtist = sizeof ( $arrayArtist );
 		$sizeTitle = sizeof ( $arrayTitle );
@@ -42,7 +42,7 @@ class WrapperMusixMatch {
 			$result .= $array [$i] . "-";
 		}
 		$result .= $array [$size - 1];
-		echo $result;
+		//echo $result;
 		
 		return $result;
 	}
