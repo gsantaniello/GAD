@@ -46,6 +46,21 @@ class WrapperMusixMatch {
 		
 		return $result;
 	}
+	private function getContextOptions(){
+		$arrContextOptions = array (
+						"ssl" => array (
+										"verify_peer" => false,
+										"verify_peer_name" => false
+								),
+						'http'=>array(
+										'method'=>"GET",
+										'header'=>"Accept-language: en\r\n" .
+										"Cookie: foo=bar\r\n" .  // check function.stream-context-create on php.net
+										"User-Agent: Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en) AppleWebKit/124 (KHTML, like Gecko) Safari/125\r\n"
+								)
+				);
+		return $arrContextOptions;
+	}
 	public function scrapingText() {
 		if (isset ( $_GET ['url'] )) {
 			$this->url = self::URI . $_GET ['url'];
@@ -53,33 +68,17 @@ class WrapperMusixMatch {
 			$this->url = self::URI . "it/testo/" . $this->artist . "/" . $this->song;
 		}
 		
-		 echo "url".$this->url;
-		$arrContextOptions = array (
-				"ssl" => array (
-						"verify_peer" => false,
-						"verify_peer_name" => false 
-				), 
-				'http'=>array(
-						'method'=>"GET",
-						'header'=>"Accept-language: en\r\n" .
-						"Cookie: foo=bar\r\n" .  // check function.stream-context-create on php.net
-						"User-Agent: Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en) AppleWebKit/124 (KHTML, like Gecko) Safari/125\r\n" // i.e. An iPad
-				)
-		);
+		// echo "url".$this->url;
+		 $context = $this->getContextOptions();
 		
-		//$context = stream_context_create($options);
-		
-		@$getMusix = file_get_contents ( $this->url, false, stream_context_create ( $arrContextOptions ) );
+		@$getMusix = file_get_contents ( $this->url, false, stream_context_create ( $context ) );
 		if ($getMusix != false) {
 			$dom = new DOMDocument ();
 			@$dom->loadHTML ( $getMusix );
-			//$query = "//div[@id='lyrics']";
 			$xpath = new DOMXPath ( $dom );
-// 			echo "stampo oggetto xpath";
-// 			print_r($xpath->query("//div"));
  			$result = $xpath->query ("//div[@id='lyrics']");
-			echo "<pre>";
-			print_r($result);
+// 			echo "<pre>";
+// 			print_r($result);
 			$textSong = $result->item (0)->nodeValue;
 		} 
 		
@@ -89,63 +88,50 @@ class WrapperMusixMatch {
 		
 		return $textSong;
 	}
+	
 	// metodo richiamato quando si cerca solo per canzone nella pagina home.html
 	public function scrapingListSongs() {
 		$this->url = self::URI . "search/" . $this->song;
+		$context = $this->getContextOptions();
+		@$getMusix = file_get_contents ( $this->url, false, stream_context_create ( $context ) );
 		
-		$arrContextOptions = array (
-				"ssl" => array (
-						"verify_peer" => false,
-						"verify_peer_name" => false 
-				) 
-		);
-		@$getMusix = file_get_contents ( $this->url, false, stream_context_create ( $arrContextOptions ) );
 		if ($getMusix != false) {
 			$dom = new DOMDocument ();
 			@$dom->loadHTML ( $getMusix );
 			$xpath = new DOMXPath ( $dom );
-			
 			$query = "//ul[@class='tracks list']//h2/a";
 			$query2 = "//ul[@class='tracks list']//h3";
-			
 			$result = $xpath->query ( $query );
 			$result2 = $xpath->query ( $query2 );
-			
-			//print_r ( $result2);
-			//echo "<pre>";
-			//print_r($result->item(1)->attributes->item(0)->value);
-			//print_r ($result2->item(2));
-			$list = "<ul>";
-			echo "prova";
-			$len = $result->length;
-			$this->song = $result->item ( 0 )->nodeValue;
-			$this->artist = $result2->item ( 0 )->nodeValue;
-			$valueUrl = $result->item ( 0 )->attributes->item ( 0 )->value;
-			$href = "risultato.php?&url=" . $valueUrl;
-			$list .= "<li><a href=\" " . $href . "\" >" . $this->song . " - " . $this->artist . "</a></li>";
-			for($i = 1; $i < $len; $i ++) {
 				
-				if ($result2->item ( $i )->nodeValue != $result2->item ( $i - 1 )->nodeValue) {
-					$this->song = $result->item ( $i )->nodeValue;
-					$this->artist = $result2->item ( $i )->nodeValue;
-					$valueUrl = $result->item ( $i )->attributes->item ( 0 )->value;
-					$href = "risultato.php?url=" . $valueUrl;
-					$list .= "<li><a href=\" " . $href . "\" >" . $this->song . " - " . $this->artist . "</a></li>";
-				}
+			// print_r ( $result2);
+			// echo "<pre>";
+			// print_r($result->item(1)->attributes->item(0)->value);
+			$list = "<ul>";
+			$len = $result->length;
+				
+			for($i = 0; $i < $len; $i ++) {
+		
+				$this->song = $result->item ( $i )->nodeValue;
+				$this->artist = $result2->item ( $i )->nodeValue;
+				$valueUrl = $result->item ( $i )->attributes->item ( 0 )->value;
+				//$href = "risultato.php?url=" . $valueUrl;
+				$href = "risultato.php?artist=".$this->artist."&song=".$this->song;
+				//$list .= "<li><a href=\" " . $href . "\" >" . $songItem."</a></li>";
+				$list .= "<li><a href=\" " . $href . "\" >" . $this->song . " - " . $this->artist . "</a></li>";
 			}
 			$list .= "</ul>";
 			return $list;
 		}
+		
 	}
+	
+	//metodo richiamato quando si inserisce solo l'artista in home.html 
 	public function scrapingArtistSongs() {
 		$this->url = self::URI . "it/testi/" . $this->artist;
-		$arrContextOptions = array (
-				"ssl" => array (
-						"verify_peer" => false,
-						"verify_peer_name" => false 
-				) 
-		);
-		@$getMusix = file_get_contents ( $this->url, false, stream_context_create ( $arrContextOptions ) );
+		$context = $this->getContextOptions();
+		@$getMusix = file_get_contents ( $this->url, false, stream_context_create ( $context ) );
+		
 		if ($getMusix != false) {
 			$dom = new DOMDocument ();
 			@$dom->loadHTML ( $getMusix );
