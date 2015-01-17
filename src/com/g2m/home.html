@@ -2,6 +2,18 @@
 <html>
 <head>
 <meta charset="utf-8" />
+<title>G2M Music</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="js/jquery.dropotron.min.js"></script>
+		<script src="js/jquery.scrolly.min.js"></script>
+		<script src="js/jquery.scrollgress.min.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-layers.min.js"></script>
+		<script src="js/init.js"></script>
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	
 <script>
@@ -11,6 +23,7 @@ $('#invia').click(function(){
 	var art = $('#artist').val();
 	var song = $('#song').val();
 	var request = 'artist='+art+'&song='+song;;
+	alert(request);
 	if(song && art){ //se artista e canzone sono settati
 		location.href = "risultato.php?"+request;
 	}
@@ -37,21 +50,47 @@ $('#annulla').click(function(){
 });
 
 </script>
+<noscript>
+			<link rel="stylesheet" href="css/skel.css" />
+			<link rel="stylesheet" href="css/style.css" />
+			<link rel="stylesheet" href="css/style-wide.css" />
+			<link rel="stylesheet" href="css/style-noscript.css" />
+		</noscript>
 </head>
-<body>
-	<table>
-		<tr>
-			<td>Artist: <input id="artist" type="text" name="artist"></td>
-		</tr>
-		<tr>
-			<td>Song: <input id="song" type="text" name="song"></td>
-		</tr>
-		<tr>
-			<td><button id="invia">Invia</button></td>
-			<td><button id="annulla">Annulla</button></td>
-		</tr>
-	</table>
-	
-	<div id="list"> </div>
+<body class="index">
+
+		<!-- Header -->
+			<header id="header" class="alt">
+				<h1 id="logo"><a href="home.html">G2M Music</a></h1>
+				<nav id="nav">
+					<ul>
+						<li class="current"><a href="home.html">Welcome</a></li>
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Banner -->
+			<section id="banner">
+
+
+				<div class="inner">
+
+					<header>
+						<h2>Search</h2>
+					</header>
+					<p>artist:<input id="artist" type="text" name="artist"></p>
+					<p>song:<input id="song" type="text" name="song"></p>
+					<footer>
+						<ul class="buttons vertical">
+							<li><button id="invia" class="button fit scrolly">Invia</button>
+								<button id="annulla" class="button fit scrolly">Annulla</button></li>
+						</ul>
+					</footer>
+
+				</div>
+
+			</section>
+
+			<div id="list"> </div>
 </body>
 </html>
