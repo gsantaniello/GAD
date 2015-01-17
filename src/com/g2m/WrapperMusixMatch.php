@@ -50,34 +50,46 @@ class WrapperMusixMatch {
 		if (isset ( $_GET ['url'] )) {
 			$this->url = self::URI . $_GET ['url'];
 		} else {
-			$this->url = self::URI . "lyrics/" . $this->artist . "/" . $this->song;
+			$this->url = self::URI . "it/testo/" . $this->artist . "/" . $this->song;
 		}
 		
-		// echo $this->url;
+		 echo "url".$this->url;
 		$arrContextOptions = array (
 				"ssl" => array (
 						"verify_peer" => false,
 						"verify_peer_name" => false 
-				) 
+				), 
+				'http'=>array(
+						'method'=>"GET",
+						'header'=>"Accept-language: en\r\n" .
+						"Cookie: foo=bar\r\n" .  // check function.stream-context-create on php.net
+						"User-Agent: Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en) AppleWebKit/124 (KHTML, like Gecko) Safari/125\r\n" // i.e. An iPad
+				)
 		);
+		
+		//$context = stream_context_create($options);
+		
 		@$getMusix = file_get_contents ( $this->url, false, stream_context_create ( $arrContextOptions ) );
 		if ($getMusix != false) {
 			$dom = new DOMDocument ();
 			@$dom->loadHTML ( $getMusix );
-			$query = "//div[@id='lyrics']";
+			//$query = "//div[@id='lyrics']";
 			$xpath = new DOMXPath ( $dom );
-			$result = $xpath->query ( $query );
-			// echo "<pre>";
-			// print_r($result);
-			$textSong = $result->item ( 0 )->nodeValue;
+// 			echo "stampo oggetto xpath";
+// 			print_r($xpath->query("//div"));
+ 			$result = $xpath->query ("//div[@id='lyrics']");
+			echo "<pre>";
+			print_r($result);
+			$textSong = $result->item (0)->nodeValue;
 		} 
-
+		
 		else {
 			$textSong = "0";
 		}
 		
 		return $textSong;
 	}
+	// metodo richiamato quando si cerca solo per canzone nella pagina home.html
 	public function scrapingListSongs() {
 		$this->url = self::URI . "search/" . $this->song;
 		
@@ -99,11 +111,12 @@ class WrapperMusixMatch {
 			$result = $xpath->query ( $query );
 			$result2 = $xpath->query ( $query2 );
 			
-			// print_r ( $result2);
-			echo "<pre>";
-			// print_r($result->item(1)->attributes->item(0)->value);
-			// print_r ($result2->item(2));
+			//print_r ( $result2);
+			//echo "<pre>";
+			//print_r($result->item(1)->attributes->item(0)->value);
+			//print_r ($result2->item(2));
 			$list = "<ul>";
+			echo "prova";
 			$len = $result->length;
 			$this->song = $result->item ( 0 )->nodeValue;
 			$this->artist = $result2->item ( 0 )->nodeValue;
@@ -137,15 +150,13 @@ class WrapperMusixMatch {
 			$dom = new DOMDocument ();
 			@$dom->loadHTML ( $getMusix );
 			$xpath = new DOMXPath ( $dom );
-			
 			$query = "//ul[@class='tracks list']//h2/a";
 			$query2 = "//ul[@class='tracks list']//h3";
-			
 			$result = $xpath->query ( $query );
 			$result2 = $xpath->query ( $query2 );
 			
 			// print_r ( $result2);
-			echo "<pre>";
+			// echo "<pre>";
 			// print_r($result->item(1)->attributes->item(0)->value);
 			$list = "<ul>";
 			$len = $result->length;

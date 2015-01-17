@@ -101,7 +101,7 @@ $(document).ready(function(){
 			echo "<h1>Testo non trovato</h1>";
 		} else {
 			
-			echo "<div id='testo'> <pre>" . $textSong . "</pre></div>";
+			echo "<div id='testo' style='border:solid red 1px'> <pre>" . $textSong . "</pre></div>";
 			
 			$wrapperLastFm = new WrapperLastFm ( $artist, $song );
 			$infoSong = $wrapperLastFm->getInfoSong ();
