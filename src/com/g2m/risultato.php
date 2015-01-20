@@ -128,7 +128,7 @@ $(document).ready(function(){
 			$textSong="<p>Text not found</p><img src=\"images/cry.png\">";
 		} 
 		
-		echo "<div class='7u 12u(narrower)'  style='overflow:scroll; text-align:left;' id='testo' ><pre> " . $textSong . "</pre></div>";
+		echo "<div class='7u 12u(narrower)'  style='overflow:auto; text-align:left;' id='testo' ><pre> " . $textSong . "</pre></div>";
 			
 		
 			
