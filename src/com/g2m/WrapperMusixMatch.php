@@ -3,10 +3,12 @@ class WrapperMusixMatch {
 	const URI = 'https://www.musixmatch.com/';
 	private $artist;
 	private $song;
+	private $title;
 	private $url;
 	public function __construct($artist, $song, $url) {
 		$this->artist = $artist;
 		$this->song = $song;
+		$this->title= $song;
 		$this->url = $url;
 		//echo "Echo musixmatch costruttore: ".$this->artist." and ". $this->song;
 		$this->verifyInput ();
@@ -111,19 +113,21 @@ class WrapperMusixMatch {
 			$len = $result->length;
 				
 			for($i = 0; $i < $len; $i ++) {
-		
-				$this->song = $result->item ( $i )->nodeValue;
-				$this->artist = $result2->item ( $i )->nodeValue;
-				$valueUrl = $result->item ( $i )->attributes->item ( 0 )->value;
-				//$href = "risultato.php?url=" . $valueUrl;
-				$href = "risultato.php?artist=".$this->artist."&song=".$this->song;
-				//$list .= "<li><a href=\" " . $href . "\" >" . $songItem."</a></li>";
-				$list .= "<li><a href=\" " . $href . "\" >" . $this->song . " - " . $this->artist . "</a></li>";
+				$titolo = strtoupper ($this->title);
+				$cerco = strtoupper ($result->item ($i)->nodeValue);
+				if (strpos($cerco,$titolo) !== false) {
+					$this->song = $result->item ( $i )->nodeValue;
+					$this->artist = $result2->item ( $i )->nodeValue;
+					$valueUrl = $result->item ( $i )->attributes->item ( 0 )->value;
+					//$href = "risultato.php?url=" . $valueUrl;
+					$href = "risultato.php?artist=".$this->artist."&song=".$this->song;
+					//$list .= "<li><a href=\" " . $href . "\" >" . $songItem."</a></li>";
+					$list .= "<li><a href=\" " . $href . "\" >" . $this->song . " - " . $this->artist . "</a></li>";
+				}
 			}
 			$list .= "</ul>";
 			return $list;
-		}
-		
+		}	
 	}
 	
 	//metodo richiamato quando si inserisce solo l'artista in home.html 
