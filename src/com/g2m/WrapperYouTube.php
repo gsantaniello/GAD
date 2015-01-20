@@ -22,7 +22,7 @@ class WrapperYouTube {
 	public function getIdByName(){
 		$this->client->setDeveloperKey($this->DEVELOPER_KEY);
 		$youtube = new Google_YoutubeService($this->client);
-		$searchResponse = $youtube->search->listSearch('id,snippet', array('q' => $this->request,))['items'][0]['id']['videoId'];
+		@$searchResponse = $youtube->search->listSearch('id,snippet', array('q' => $this->request,))['items'][0]['id']['videoId'];
 		
 		return $searchResponse; 
 	}

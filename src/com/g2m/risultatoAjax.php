@@ -20,7 +20,7 @@
 				
 				$source=$data->responseData->results [0]->url;
 				
-				$image="<img  src=". $source." height=\"300\" width=\"300\"></img>";
+				$image="<img src=". $source."></img>";
 				$_SESSION[$artist]=$image;
 			}
 			
@@ -61,16 +61,19 @@
 			
 			$albums = $wrapperWikia->scrapingAlbum ();
 			
-			echo "<div id='immagine'>".$image."</div>
-					<div id='album' style='border:1px solid red'> <pre>" . $albums . "</pre></div>
-				<div id='popularSong' style='border:1px solid green'>" . $list . "</div>";
+			echo "
+					<span class='artista'>$artist</span>
+					<div class='image' id='immagine'>".$image."</div>
+					<div class='row'>
+					<div class='6u 12u(narrower)' id='album' > " . $albums . "</div>
+				<div class='6u 12u(narrower)' id='popularSong' >" . $list . "</div></div>";
 		}
 		
 		
 		if ($artist != null && $album!=null && $song==null){
 			$wrapperLastFm = new WrapperLastFm($artist, " ");
 			$infoSong = $wrapperLastFm->getInfoAlbum($album);
-			echo $infoSong;	
+			echo "<p class='canzone'>".$album."<p/>".$infoSong;	
 		}
 		
 		?>

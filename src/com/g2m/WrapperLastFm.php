@@ -94,24 +94,23 @@ class WrapperLastFm {
 			$result3 = $xpath->query ( $query3 ); // img album
 			$result4 = $xpath->query ( $query4 );
 			//print_r($result2);
-			$albumName = $result2->item ( 0 )->nodeValue; //inserire @ per eliminare warning
-			$cover = $result3->item ( 0 )->nodeValue; // img album
+			@$albumName = $result2->item ( 0 )->nodeValue; //inserire @ per eliminare warning
+			@$cover = $result3->item ( 0 )->nodeValue; // img album
 			
 			$d = ($result4->item ( 0 )->nodeValue)/1000; // prendere la prima cifra, inserire il punto e eliminare lo zero
 			$duration  = gmdate("i:s",$d);
 			//$duration = $this->formatDurata($d);
 			
 		} 
-		$resultScraping = "<div id='info'>";
+		$resultScraping = "<div class='6u 12u(narrower)' id='info'>";
 		
 		if(!($albumName==null && $cover==null && $duration==null)){
-			$resultScraping.="<table border='1'>
-			<th colspan='2' style='text-align:center;'>Info</th>
-			<tr><td>Album</td><td>" . $albumName . "</td></tr>
-			<tr><td>Copertina</td><td><img id=\"cover\" onclick=\"dettaglioAlbum('$this->artist','$albumName')\" src=". $cover."></td></tr>
-			<tr><td>Durata</td><td>" . $duration . " min</td></tr>	
-			
-				</table>";	
+			$resultScraping.="<table>
+			<th colspan='2' style='text-align:center;'><strong>Info<strong></th>
+			<tr><td><strong>Album</strong></td><td><strong>" . $albumName . "</strong></td></tr>
+			<tr><td><strong>Copertina</storng></td><td><a href=\"#detAlbum\" ><img id=\"cover\" onclick=\"dettaglioAlbum('$this->artist','$albumName')\" src=". $cover."></a></td></tr>
+			<tr><td><strong>Durata</strong></td><td><strong>" . $duration . " min</strong></td></tr>	
+			</table>";	
 		}
 		$resultScraping.="</div>";
 		

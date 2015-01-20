@@ -1,11 +1,19 @@
 <html>
 <head>
-<meta charset="utf-8" />
+
 <title>Music G2M</title>
 
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="js/jquery.dropotron.min.js"></script>
+		<script src="js/jquery.scrolly.min.js"></script>
+		<script src="js/jquery.scrollgress.min.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-layers.min.js"></script>
+		<script src="js/init.js"></script>
 
-<script
-	src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script>
 $(document).ready(function(){
 	playVideo();
@@ -33,7 +41,6 @@ $(document).ready(function(){
 
 	function playVideo(){
 		response = document.getElementById("idVideo").innerHTML;
-//		alert(response);
 		tag = document.createElement('script');
 		tag.src = "https://www.youtube.com/iframe_api";
 		firstScriptTag = document.getElementsByTagName('head')[0];
@@ -62,6 +69,20 @@ $(document).ready(function(){
 
 	</script>
 </head>
+<body class="index">
+
+		<!-- Header -->
+			<header id="header" class="reveal">
+				<h1 id="logo"><a href="home.html">G2Music</a></h1>
+				<nav id="nav">
+					<ul>
+						<li class="current"><a href="home.html">Welcome</a></li>
+					</ul>
+				</nav>
+			</header>
+			<article id="main">
+			<section id="contenitore"class="wrapper style3 container special">
+			
 		<?php
 		
 		session_start();
@@ -89,32 +110,60 @@ $(document).ready(function(){
 				
 			$source=$data->responseData->results [0]->url;
 				
-			$image="<img  src=". $source." height=\"300\" width=\"300\"></img>";
+			$image="<img  src=". $source."></img>";
 			$_SESSION[$artist]=$image;
 		}
 		
-		echo "<div id='immagine'> " . $image.  "</div>";
+		echo "
+			<header class=\"major\">
+		<span class='artista'>$artist</span>
+		<div class=\"image\" id='immagine'> " . $image.  "</div>
+		<span class='canzone'>$song</span>
+		</header> 
+		<div class=\"row\">";
 		
 		$wrapperMusixMatch = new WrapperMusixMatch ( $artist, $song, '' );
 		$textSong = $wrapperMusixMatch->scrapingText ();
 		if ($textSong == "0") {
-			echo "<h1>Testo non trovato</h1>";
-		} else {
+			$textSong="<p>Text not found</p><img src=\"images/cry.png\">";
+		} 
+		
+		echo "<div class='6u 12u(narrower)'  id='testo' ><pre> " . $textSong . "</pre></div>";
 			
-			echo "<div id='testo' style='border:solid red 1px'> <pre>" . $textSong . "</pre></div>";
+		
 			
-			$wrapperLastFm = new WrapperLastFm ( $artist, $song );
-			$infoSong = $wrapperLastFm->getInfoSong ();
-			echo $infoSong;
-			
-			$request = $artist . " " . $song;
-			$wrapperYouTube = new WrapperYouTube ( $request );
-			$idVideo = $wrapperYouTube->getIdByName ();
-			echo "<p id='idVideo' hidden>" . $idVideo . "</p>";
-		}
+		$request = $artist . " " . $song;
+		$wrapperYouTube = new WrapperYouTube ( $request );
+		$idVideo = $wrapperYouTube->getIdByName ();
+		echo "<div id='idVideo' hidden>" . $idVideo . "</div>";
+		
 		?>
 		
-	<div id="detAlbum"></div>
-<div id="player"></div>
+	<div id="player" class="6u 12u(narrower)" ></div>
+	</div>
+	<div class="row">
+	<?php 
+	$wrapperLastFm = new WrapperLastFm ( $artist, $song );
+		$infoSong = $wrapperLastFm->getInfoSong ();
+		echo $infoSong;
+		?>
+	<div class="6u 12u(narrower)" id="detAlbum"></div>
+	</div>
+	</section>
+	</article>
+	<!-- Footer -->
+			<footer id="footer">
 
+				<ul class="icons">
+					<li><a href="https://www.facebook.com/giuseppe.santaniello" class="icon circle fa-facebook"> S</a></li><li>
+					<li><a href="https://www.facebook.com/giuseppe.pietravalle" class="icon circle fa-facebook"> P</a></li>
+					<li><a href="https://www.facebook.com/marco.mannara.9" class="icon circle fa-facebook"> M</a></li>
+				</ul>
+
+				<ul class="copyright">
+					<li>&copy; G2M</li><li>Design: G2M</li>
+				</ul>
+
+			</footer>
+</body>
 </html>

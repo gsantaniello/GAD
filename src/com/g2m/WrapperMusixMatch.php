@@ -144,7 +144,7 @@ class WrapperMusixMatch {
 			// print_r ( $result2);
 			// echo "<pre>";
 			// print_r($result->item(1)->attributes->item(0)->value);
-			$list = "<ul>";
+			$list="<span class=\"liste\">Popular Songs</span><ul>";
 			$len = $result->length;
 			
 			for($i = 0; $i < $len; $i ++) {

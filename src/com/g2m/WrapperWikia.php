@@ -46,11 +46,11 @@ class WrapperWikia {
 			$result3= $xpath->query($query3);
 				
 			$len=$result1->length;
-			$list="<h2>Lista ordinata per anno</h2><ul>";
+			$list="<span class=\"liste\">discography</span><ul>";
 			for ($i=0;$i<$len;$i++){
 				$albumTitle=$result1->item($i)->nodeValue;
 				$year = $result3->item($i)->nodeValue;
-				$list.="<li>".$albumTitle." - Anno: ".$year."</li><ol>";
+				$list.="<li><strong>".$albumTitle." - Anno: ".$year."</strong></li><ol>";
 				$lenAlbum=$result2->item($i)->childNodes->length;
 				
 				for($j=0;$j<$lenAlbum;$j++)

@@ -22,8 +22,8 @@ $(document).ready(function(){
 $('#invia').click(function(){
 	var art = $('#artist').val();
 	var song = $('#song').val();
-	var request = 'artist='+art+'&song='+song;;
-	alert(request);
+	var request = 'artist='+art+'&song='+song;
+	$('#contenitore').addClass( "wrapper style3 container special" );
 	if(song && art){ //se artista e canzone sono settati
 		location.href = "risultato.php?"+request;
 	}
@@ -60,8 +60,8 @@ $('#annulla').click(function(){
 <body class="index">
 
 		<!-- Header -->
-			<header id="header" class="alt">
-				<h1 id="logo"><a href="home.html">G2M Music</a></h1>
+			<header id="header" class="reveal">
+				<h1 id="logo"><a href="home.html">G2Music</a></h1>
 				<nav id="nav">
 					<ul>
 						<li class="current"><a href="home.html">Welcome</a></li>
@@ -76,21 +76,39 @@ $('#annulla').click(function(){
 				<div class="inner">
 
 					<header>
-						<h2>Search</h2>
+						<h2>G2Music</h2>
 					</header>
 					<p>artist:<input id="artist" type="text" name="artist"></p>
 					<p>song:<input id="song" type="text" name="song"></p>
 					<footer>
 						<ul class="buttons vertical">
-							<li><button id="invia" class="button fit scrolly">Invia</button>
-								<button id="annulla" class="button fit scrolly">Annulla</button></li>
+							<li><a href="#main" id="invia" class="button fit scrolly">Search</a>
+								<button id="annulla" class="button fit scrolly">Reset</button></li>
 						</ul>
 					</footer>
 
 				</div>
 
 			</section>
+			<article id="main">
+			<section id="contenitore">
+					<div id="list"> </div>
+			</section>
+			</article>
+			<!-- Footer -->
+			<footer id="footer">
 
-			<div id="list"> </div>
+				<ul class="icons">
+					<li><a href="https://www.facebook.com/giuseppe.santaniello" class="icon circle fa-facebook"> S</a></li><li>
+					<li><a href="https://www.facebook.com/giuseppe.pietravalle" class="icon circle fa-facebook"> P</a></li>
+					<li><a href="https://www.facebook.com/marco.mannara.9" class="icon circle fa-facebook"> M</a></li>
+				</ul>
+
+				<ul class="copyright">
+					<li>&copy; Untitled</li><li>Design: GMG</li>
+				</ul>
+
+			</footer>
+			
 </body>
 </html>
