@@ -463,7 +463,7 @@
 
 	table {
 		table-layout: fixed;
- 		width: 300px;
+ 		width: auto;
  		border-style: outset;
  		border-width: 3px;
  		border-collapse: separate;

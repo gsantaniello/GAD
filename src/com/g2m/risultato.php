@@ -81,7 +81,7 @@ $(document).ready(function(){
 				</nav>
 			</header>
 			<article id="main">
-			<section id="contenitore"class="wrapper style3 container special">
+			<section id="contenitore" style="margin-left: 50px; margin-right: 50px; width: auto;" class="wrapper style3 container special">
 			
 		<?php
 		
@@ -128,7 +128,7 @@ $(document).ready(function(){
 			$textSong="<p>Text not found</p><img src=\"images/cry.png\">";
 		} 
 		
-		echo "<div class='6u 12u(narrower)'  id='testo' ><pre> " . $textSong . "</pre></div>";
+		echo "<div class='7u 12u(narrower)'  style='text-align:left;' id='testo' ><pre> " . $textSong . "</pre></div>";
 			
 		
 			
@@ -139,7 +139,7 @@ $(document).ready(function(){
 		
 		?>
 		
-	<div id="player" class="6u 12u(narrower)" ></div>
+	<div id="player" class="5u 12u(narrower)" ></div>
 	</div>
 	<div class="row">
 	<?php 
