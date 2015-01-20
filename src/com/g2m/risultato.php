@@ -1,7 +1,7 @@
 <html>
 <head>
-
-<title>Music G2M</title>
+<link rel="icon"type="image/png"href="images/favicon.png">
+<title>G2Music</title>
 
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
